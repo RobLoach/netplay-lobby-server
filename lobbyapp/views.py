@@ -144,7 +144,11 @@ def add_entry(request):
 
     if entry.username == username and \
       entry.ip == ip and \
-      entry.port == port:
+      entry.port == port and \
+      entry.core_name == request.POST['core_name'] and \
+      entry.core_version == request.POST['core_version'] and \
+      entry.game_name == request.POST['game_name'] and \
+      entry.game_crc == request.POST['game_crc']:
         update = entry.id
         break
 
