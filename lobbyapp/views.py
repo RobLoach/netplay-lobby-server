@@ -8,7 +8,7 @@ from django.core import serializers
 from datetime import timedelta
 from models import *
 from lobby import settings_secret
-import json, socket, struct, urllib, urllib2, hashlib, hmac
+import json, socket, struct, urllib, urllib2, hashlib, hmac, os
 
 ENTRY_TIMEOUT = 60
 THROTTLE = True
@@ -17,6 +17,19 @@ MITM_HOST = 'newlobby.libretro.com'
 MITM_PORT = 55435
 MITM_SOCKET_TIMEOUT = 10
 
+def handle_exception():
+  info = os.sys.exc_info()
+
+  if len(info) >= 3:
+    exc_type = str(info[0])
+    exc_obj = info[1]
+    exc_tb = info[2]
+    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)
+
+    if len(fname) > 1:
+      msg = 'ERROR: ' + exc_type + ' at ' + fname[1] + ':' + str(exc_tb.tb_lineno)
+      return msg
+
 def make_digest(message, key):
   digester = hmac.new(key, message, hashlib.sha1)
   signature = digester.hexdigest()
@@ -24,28 +37,40 @@ def make_digest(message, key):
   return signature
 
 def send_irc_netplay_message(msg):
-  data = {
-    'message': msg,
-    'channel': settings_secret.irc_netplay_channel,
-    'sign': make_digest(msg, settings_secret.irc_netplay_message_key)
-  }
+  try:
+    data = {
+      'message': msg,
+      'channel': settings_secret.irc_netplay_channel,
+      'sign': make_digest(msg, settings_secret.irc_netplay_message_key)
+    }
 
-  url = settings_secret.irc_netplay_message_endpoint + '?' + urllib.urlencode(data)
+    url = settings_secret.irc_netplay_message_endpoint + '?' + urllib.urlencode(data)
 
-  request = urllib2.Request(url)
+    request = urllib2.Request(url)
 
-  # ignore response for now
-  urllib2.urlopen(request, timeout=10)
+    # ignore response for now
+    urllib2.urlopen(request, timeout=10)
+  except Exception, e:
+    msg = handle_exception()
+
+    with open('/tmp/irc_error', 'wb') as f:
+      f.write('ERROR: ' + str(e) + '\n' + msg + '\n')
 
 def send_discord_netplay_message(msg):
-  request = urllib2.Request(settings_secret.discord_netplay_message_endpoint)
-  request.add_header("Authorization", settings_secret.discord_retrobot_token)
-  request.add_header("User-Agent", settings_secret.discord_user_agent)
+  try:
+    request = urllib2.Request(settings_secret.discord_netplay_message_endpoint)
+    request.add_header("Authorization", settings_secret.discord_retrobot_token)
+    request.add_header("User-Agent", settings_secret.discord_user_agent)
 
-  data = {'content': msg}
+    data = {'content': msg}
 
-  # ignore response for now
-  urllib2.urlopen(request, urllib.urlencode(data), timeout=10)
+    # ignore response for now
+    urllib2.urlopen(request, urllib.urlencode(data), timeout=10)
+  except Exception, e:
+    msg = handle_exception()
+
+    with open('/tmp/discord_error', 'wb') as f:
+      f.write('ERROR: ' + str(e) + '\n' + msg + '\n')
 
 def request_new_mitm_port(mitm_ip=MITM_HOST, mitm_port=MITM_PORT):
   try:
@@ -75,7 +100,6 @@ def request_new_mitm_port(mitm_ip=MITM_HOST, mitm_port=MITM_PORT):
     f = open('/tmp/entry_mitm_error', 'wb')
     f.write(str(e) + '\n')
     f.close()
-    #pass
 
   return 0
 
@@ -213,8 +237,8 @@ def add_entry(request):
         irc_msg = kwargs['username'] + ' wants to play ' + kwargs['game_name'] + ' using ' + kwargs['core_name'] + '. There are currently ' + str(Entry.objects.count()) + ' active rooms.'
         disc_msg = '`' + kwargs['username'] + '` wants to play `' + kwargs['game_name'] + '` using `' + kwargs['core_name'] + '`. There are currently `' + str(Entry.objects.count()) + '` active rooms.'
 
-        send_discord_netplay_message(disc_msg)
-        send_irc_netplay_message(irc_msg)
+        send_discord_netplay_message(disc_msg.encode('utf-8'))
+        send_irc_netplay_message(irc_msg.encode('utf-8'))
 
     result = 'status=OK\n'
 
@@ -226,8 +250,10 @@ def add_entry(request):
 
     return response
   except Exception, e:
+    msg = handle_exception()
+
     f = open('/tmp/entry_error', 'wb')
-    f.write(str(e) + '\n')
+    f.write(str(e) + '\n' + msg + '\n')
     f.close()
     #pass
 
