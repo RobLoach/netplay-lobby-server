@@ -31,7 +31,7 @@
         </div>
         {% if entries %}
           <table class="table"><thead><tr>
-	    <th>Nickname</th><th>Game</th><th>Core</th><th>Password?</th><th>Created</th>
+	    <th>Nickname</th><th>Game</th><th>Core</th><th>Password?</th><th>Version</th><th>Created</th>
 	  </tr></thead><tbody>
           {% for entry in entries %}
             <tr>
@@ -39,6 +39,11 @@
               <td>{{ entry.game_name }}</td>
               <td>{{ entry.core_name }} {{ entry.core_version }}</td>
               <td>{{ entry.has_password|yesno:"Yes,No" }}</td>
+              {% if entry.retroarch_version %}
+              <td>{{ entry.retroarch_version }}</td>
+              {% else %}
+              <td>n/a</td>
+              {% endif %}
               <td>{{ entry.created|naturaltime }}</td>
 	    </tr>
           {% endfor %}

@@ -120,6 +120,10 @@ def add_entry(request):
   host_method = HOST_METHOD_UNKNOWN
   has_password = False
   has_spectate_password = False
+  retroarch_version = ''
+
+  if request.POST.has_key('retroarch_version'):
+    retroarch_version = request.POST['retroarch_version']
 
   if request.POST.has_key('has_password') and int(request.POST['has_password']) == 1:
     has_password = True
@@ -190,6 +194,7 @@ def add_entry(request):
       'host_method': host_method,
       'has_password': has_password,
       'has_spectate_password': has_spectate_password,
+      'retroarch_version': retroarch_version,
     }
 
     change_mitm = False
