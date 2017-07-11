@@ -53,7 +53,7 @@ class LogEntry(models.Model):
   created = models.DateTimeField('created', auto_now_add=True)
 
   def __unicode__(self):
-    return self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name
+    return str(self.created) + ': ' + self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name
 
   class Meta:
     verbose_name_plural = 'Log Entries'
