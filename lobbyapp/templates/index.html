@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load countries %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +36,7 @@
           </tr></thead><tbody>
           {% for entry in entries %}
             <tr>
-              <td><img title="{{ entry.country }}" alt="{{ entry.country }}" src="/mymedia/flags/{{ entry.country|lower }}.png"></td>
+              <td><img title="{{ entry.country }} - {{ entry.country|country_longname }}" alt="{{ entry.country }} - {{ entry.country|country_longname }}" src="/mymedia/flags/{{ entry.country|lower }}.png"></td>
               <th>{{ entry.username }}</th>
               <td>{{ entry.game_name }}</td>
               <td>{{ entry.core_name }} {{ entry.core_version }}</td>
