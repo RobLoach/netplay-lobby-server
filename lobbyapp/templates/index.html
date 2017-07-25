@@ -31,11 +31,12 @@
         </div>
         {% if entries %}
           <table class="table"><thead><tr>
-	    <th>Nickname</th><th>Game</th><th>Core</th><th>Password?</th><th>Version</th><th>Created</th>
-	  </tr></thead><tbody>
+          <th></th><th>Nickname</th><th>Game</th><th>Core</th><th>Password?</th><th>Version</th><th>Created</th>
+          </tr></thead><tbody>
           {% for entry in entries %}
             <tr>
-	      <th>{{ entry.username }}</th>
+              <td><img title="{{ entry.country }}" alt="{{ entry.country }}" src="/mymedia/flags/{{ entry.country|lower }}.png"></td>
+              <th>{{ entry.username }}</th>
               <td>{{ entry.game_name }}</td>
               <td>{{ entry.core_name }} {{ entry.core_version }}</td>
               <td>{{ entry.has_password|yesno:"Yes,No" }}</td>
@@ -45,7 +46,7 @@
               <td>n/a</td>
               {% endif %}
               <td>{{ entry.created|naturaltime }}</td>
-	    </tr>
+            </tr>
           {% endfor %}
           </tbody></table>
         {% else %}
