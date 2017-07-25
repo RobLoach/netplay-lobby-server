@@ -17,6 +17,20 @@ MITM_HOST = 'newlobby.libretro.com'
 MITM_PORT = 55435
 MITM_SOCKET_TIMEOUT = 10
 
+def ip2int(addr):
+  return struct.unpack("!I", socket.inet_aton(addr))[0]
+
+def get_country(ip):
+  country = ''
+
+  try:
+    ip_int = ip2int(ip)
+    country = GeoIP.objects.filter(network__lte=ip_int, broadcast__gte=ip_int)[0].country
+  except:
+    pass
+
+  return country
+
 def handle_exception():
   info = os.sys.exc_info()
 
@@ -195,6 +209,7 @@ def add_entry(request):
       'has_password': has_password,
       'has_spectate_password': has_spectate_password,
       'retroarch_version': retroarch_version,
+      'country': get_country(ip),
     }
 
     change_mitm = False

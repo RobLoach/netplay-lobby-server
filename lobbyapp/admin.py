@@ -82,7 +82,7 @@ class EntryAdmin(admin.ModelAdmin):
 
 class LogEntryAdmin(admin.ModelAdmin):
   form = LogEntryForm
-  search_fields = ['username', 'ip', 'core_name', 'core_version', 'game_name', 'game_crc']
+  search_fields = ['username', 'ip', 'country', 'core_name', 'core_version', 'game_name', 'game_crc']
 
   def get_form(self, request, obj=None, **kwargs):
     if obj is not None:

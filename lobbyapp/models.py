@@ -27,11 +27,12 @@ class Entry(models.Model):
   has_spectate_password = models.BooleanField('has spectator password', default=False)
   host_method = models.PositiveSmallIntegerField('host method', choices=HOST_CHOICES)
   retroarch_version = models.CharField('RetroArch version', max_length=32, blank=True)
+  country = models.CharField('country', max_length=200, blank=True)
   created = models.DateTimeField('created', auto_now_add=True)
   updated = models.DateTimeField('updated', auto_now=True)
 
   def __unicode__(self):
-    return self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name
+    return self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name + ' Country: ' + self.country
 
   class Meta:
     verbose_name_plural = 'Entries'
@@ -50,10 +51,16 @@ class LogEntry(models.Model):
   has_spectate_password = models.BooleanField('has spectator password', default=False)
   host_method = models.PositiveSmallIntegerField('host method', choices=HOST_CHOICES)
   retroarch_version = models.CharField('RetroArch version', max_length=32, blank=True)
+  country = models.CharField('country', max_length=200, blank=True)
   created = models.DateTimeField('created', auto_now_add=True)
 
   def __unicode__(self):
-    return str(self.created) + ': ' + self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name
+    return str(self.created) + ': ' + self.username + '@' + self.ip + ' Core: ' + self.core_name + ' ' + self.core_version + ' Game: ' + self.game_name + ' Country: ' + self.country
 
   class Meta:
     verbose_name_plural = 'Log Entries'
+
+class GeoIP(models.Model):
+  network = models.PositiveIntegerField(db_index=True)
+  broadcast = models.PositiveIntegerField(db_index=True)
+  country = models.CharField(max_length=2, db_index=True)
