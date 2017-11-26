@@ -139,6 +139,9 @@ def add_entry(request):
   if request.POST.has_key('retroarch_version'):
     retroarch_version = request.POST['retroarch_version']
 
+  if request.POST.has_key('frontend'):
+    frontend = request.POST['frontend']
+
   if request.POST.has_key('has_password') and int(request.POST['has_password']) == 1:
     has_password = True
 
@@ -209,6 +212,7 @@ def add_entry(request):
       'has_password': has_password,
       'has_spectate_password': has_spectate_password,
       'retroarch_version': retroarch_version,
+      'frontend' : frontend,
       'country': get_country(ip),
     }
 
