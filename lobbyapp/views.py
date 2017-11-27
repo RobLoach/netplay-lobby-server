@@ -135,6 +135,7 @@ def add_entry(request):
   has_password = False
   has_spectate_password = False
   retroarch_version = ''
+  frontend = ''
 
   if request.POST.has_key('retroarch_version'):
     retroarch_version = request.POST['retroarch_version']
