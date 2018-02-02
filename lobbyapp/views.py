@@ -13,7 +13,7 @@ import json, socket, struct, urllib, urllib2, hashlib, hmac, os
 ENTRY_TIMEOUT = 60
 THROTTLE = True
 THROTTLE_SECS = 5
-MITM_HOST = 'newlobby.libretro.com'
+MITM_HOST = 'lobby.libretro.com'
 MITM_PORT = 55435
 MITM_SOCKET_TIMEOUT = 10
 
@@ -230,6 +230,22 @@ def add_entry(request):
       else:
         mitm_port = MITM_PORT
 
+    if request.POST.has_key('mitm_server') and len(request.POST['mitm_server']) > 0:
+      change_mitm = True
+
+      try:
+        mitm_server = RelayServer.objects.get(name=request.POST['mitm_server'], enabled=True).address.split(':')
+        mitm_ip = mitm_server[0]
+
+        if len(mitm_server) > 1:
+          mitm_port = int(mitm_server[1])
+        else:
+          mitm_port = MITM_PORT
+      except:
+        # fall back to regular server if we could not parse the desired server
+        mitm_ip = MITM_HOST
+        mitm_port = MITM_PORT
+
     if update:
       entries = Entry.objects.filter(pk=update)
 
@@ -262,7 +278,7 @@ def add_entry(request):
         irc_msg = kwargs['username'] + ' wants to play ' + kwargs['game_name'] + ' using ' + kwargs['core_name'] + '. There are currently ' + str(Entry.objects.count()) + ' active rooms.'
         disc_msg = '`' + kwargs['username'] + '` wants to play `' + kwargs['game_name'] + '` using `' + kwargs['core_name'] + '`. There are currently `' + str(Entry.objects.count()) + '` active rooms.'
 
-        send_discord_netplay_message(disc_msg.encode('utf-8'))
+        #send_discord_netplay_message(disc_msg.encode('utf-8'))
         send_irc_netplay_message(irc_msg.encode('utf-8'))
 
     result = 'status=OK\n'

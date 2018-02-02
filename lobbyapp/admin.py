@@ -97,6 +97,10 @@ class LogEntryAdmin(admin.ModelAdmin):
     # ignore changes to log entries
     pass
 
+class RelayServerAdmin(admin.ModelAdmin):
+  list_display = ['name', 'description', 'address', 'enabled', 'created', 'updated']
+
 admin.site.site_header = 'Lobby Administration'
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(RelayServer, RelayServerAdmin)

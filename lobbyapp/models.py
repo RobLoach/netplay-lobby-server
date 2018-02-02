@@ -12,6 +12,14 @@ HOST_CHOICES = (
   (HOST_METHOD_MITM, 'MITM'),
 )
 
+class RelayServer(models.Model):
+  name = models.CharField('server name', max_length=200)
+  description = models.CharField('description', max_length=200)
+  address = models.CharField('address', max_length=200, help_text='specify optional port with a colon')
+  enabled = models.BooleanField('enabled', default=True)
+  created = models.DateTimeField('created', auto_now_add=True)
+  updated = models.DateTimeField('updated', auto_now=True)
+
 class Entry(models.Model):
   username = models.CharField('username', max_length=32)
   ip = models.CharField('IP address', max_length=45)
