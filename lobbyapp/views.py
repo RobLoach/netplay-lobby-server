@@ -111,8 +111,10 @@ def request_new_mitm_port(mitm_ip=MITM_HOST, mitm_port=MITM_PORT):
 
         return port
   except Exception, e:
+    msg = handle_exception()
+
     f = open('/tmp/entry_mitm_error', 'wb')
-    f.write(str(e) + '\n')
+    f.write(str(e) + '\n' + msg + '\n')
     f.close()
 
   return 0
@@ -159,6 +161,9 @@ def add_entry(request):
     port = 55435
 
   if port <= 0 or port > 65535:
+    f = open('/tmp/entry_add_error', 'wb')
+    f.write('invalid port' + '\n')
+    f.close()
     raise Http404
 
   if request.META.has_key('REMOTE_ADDR'):
@@ -174,6 +179,9 @@ def add_entry(request):
     len(request.POST['game_name']) == 0 or \
     len(request.POST['game_crc']) == 0 or \
     len(request.POST['core_version']) == 0:
+      f = open('/tmp/entry_add_error', 'wb')
+      f.write('invalid post contents' + '\n')
+      f.close()
       raise Http404
 
   t = localtime(now())
@@ -241,7 +249,13 @@ def add_entry(request):
           mitm_port = int(mitm_server[1])
         else:
           mitm_port = MITM_PORT
-      except:
+      except Exception, e:
+        msg = handle_exception()
+
+        f = open('/tmp/mitm_server_error', 'wb')
+        f.write(str(e) + '\n' + msg + '\n')
+        f.close()
+
         # fall back to regular server if we could not parse the desired server
         mitm_ip = MITM_HOST
         mitm_port = MITM_PORT
@@ -253,16 +267,20 @@ def add_entry(request):
 
       for entry in entries:
         if entry.host_method != HOST_METHOD_MITM and host_method == HOST_METHOD_MITM and not change_mitm:
-          new_mitm_port = request_new_mitm_port()
+          new_mitm_port = request_new_mitm_port(mitm_ip, mitm_port)
 
           if new_mitm_port > 0:
-            entry.mitm_ip = MITM_HOST
+            entry.mitm_ip = mitm_ip
             entry.mitm_port = new_mitm_port
 
         entry.save()
     else:
       if host_method == HOST_METHOD_MITM:
         new_mitm_port = request_new_mitm_port(mitm_ip, mitm_port)
+
+        f = open('/tmp/mitm_entry_add_log', 'wb')
+        f.write('using mitm address ' + mitm_ip + ':' + str(mitm_port) + ': new mitm port ' + str(new_mitm_port) + '\n')
+        f.close()
 
         if new_mitm_port > 0:
           kwargs['mitm_ip'] = mitm_ip
