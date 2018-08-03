@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'lobbyapp.views.index'),
     url(r'^add/', 'lobbyapp.views.add_entry'),
-    url(r'^list/', 'lobbyapp.views.list_entries'),
+    url(r'^list/$', 'lobbyapp.views.list_entries'),
 ]

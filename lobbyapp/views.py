@@ -296,7 +296,7 @@ def add_entry(request):
         irc_msg = kwargs['username'] + ' wants to play ' + kwargs['game_name'] + ' using ' + kwargs['core_name'] + '. There are currently ' + str(Entry.objects.count()) + ' active rooms.'
         disc_msg = '`' + kwargs['username'] + '` wants to play `' + kwargs['game_name'] + '` using `' + kwargs['core_name'] + '`. There are currently `' + str(Entry.objects.count()) + '` active rooms.'
 
-        #send_discord_netplay_message(disc_msg.encode('utf-8'))
+        send_discord_netplay_message(disc_msg.encode('utf-8'))
         send_irc_netplay_message(irc_msg.encode('utf-8'))
 
     result = 'status=OK\n'
