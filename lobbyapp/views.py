@@ -289,6 +289,8 @@ def add_entry(request):
       entry = Entry.objects.create(**kwargs)
       entry.save()
 
+      kwargs['id'] = entry.id
+
       log = LogEntry.objects.create(**kwargs)
       log.save()
 
@@ -301,9 +303,9 @@ def add_entry(request):
 
     result = 'status=OK\n'
 
-    if 'mitm_ip' in kwargs and 'mitm_port' in kwargs and not update:
-      result += 'mitm_ip=' + kwargs['mitm_ip'] + '\n'
-      result += 'mitm_port=' + str(kwargs['mitm_port']) + '\n'
+    if not update:
+      for key in kwargs.keys():
+        result += str(key) + '=' + str(kwargs[key]) + '\n'
 
     response = HttpResponse(result, content_type='text/plain')
 
