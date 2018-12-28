@@ -349,3 +349,16 @@ def list_entries(request):
     data = serializers.serialize("json", entries, indent=2)
 
   return HttpResponse(data, content_type='text/plain')
+
+@csrf_exempt
+def get_entry(request, idx):
+  entry = None
+
+  try:
+    entry = Entry.objects.get(id=int(idx))
+  except Entry.DoesNotExist:
+    raise Http404
+
+  data = json.dumps(json.loads(serializers.serialize("json", [entry,], indent=2))[0], indent=2)
+
+  return HttpResponse(data, content_type='text/plain')
