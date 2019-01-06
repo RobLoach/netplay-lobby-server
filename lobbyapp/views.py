@@ -359,6 +359,6 @@ def get_entry(request, idx):
   except Entry.DoesNotExist:
     raise Http404
 
-  data = json.dumps(json.loads(serializers.serialize("json", [entry,], indent=2))[0], indent=2)
+  data = serializers.serialize("json", [entry,], indent=2)
 
   return HttpResponse(data, content_type='text/plain')
