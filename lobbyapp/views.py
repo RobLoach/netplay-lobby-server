@@ -138,12 +138,16 @@ def add_entry(request):
   has_spectate_password = False
   retroarch_version = ''
   frontend = ''
+  subsystem_name = ''
 
   if request.POST.has_key('retroarch_version'):
     retroarch_version = request.POST['retroarch_version']
 
   if request.POST.has_key('frontend'):
     frontend = request.POST['frontend']
+
+  if request.POST.has_key('subsystem_name'):
+    subsystem_name = request.POST['subsystem_name']
 
   if request.POST.has_key('has_password') and int(request.POST['has_password']) == 1:
     has_password = True
@@ -222,6 +226,7 @@ def add_entry(request):
       'has_spectate_password': has_spectate_password,
       'retroarch_version': retroarch_version,
       'frontend' : frontend,
+      'subsystem_name' : subsystem_name,
       'country': get_country(ip),
     }
 
