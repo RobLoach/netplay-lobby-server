@@ -36,7 +36,7 @@ class Entry(models.Model):
   host_method = models.PositiveSmallIntegerField('host method', choices=HOST_CHOICES)
   retroarch_version = models.CharField('RetroArch version', max_length=32, blank=True)
   frontend = models.CharField('Frontend identifier', max_length=32, blank=True)
-  subsystem_name = models.CharField('subsystem name', max_length=200)
+  subsystem_name = models.CharField('subsystem name', max_length=200, blank=True)
   country = models.CharField('country', max_length=200, blank=True)
   created = models.DateTimeField('created', auto_now_add=True)
   updated = models.DateTimeField('updated', auto_now=True)
@@ -62,7 +62,7 @@ class LogEntry(models.Model):
   host_method = models.PositiveSmallIntegerField('host method', choices=HOST_CHOICES)
   retroarch_version = models.CharField('RetroArch version', max_length=32, blank=True)
   frontend = models.CharField('Frontend identifier', max_length=32, blank=True)
-  subsystem_name = models.CharField('subsystem name', max_length=200)
+  subsystem_name = models.CharField('subsystem name', max_length=200, blank=True)
   country = models.CharField('country', max_length=200, blank=True)
   created = models.DateTimeField('created', auto_now_add=True)
 
