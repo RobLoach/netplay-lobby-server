@@ -1,1 +1,3 @@
 lobby/settings_secret.py
+migrations/
+*.pyc

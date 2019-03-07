@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'lobbyapp',
+    'debuginfo',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,3 +92,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 FORCE_SCRIPT_NAME = ''
+
+RUNNING_DEVSERVER = (len(os.sys.argv) > 1 and os.sys.argv[1] == 'runserver')
+
+if RUNNING_DEVSERVER:
+  DEBUG = True

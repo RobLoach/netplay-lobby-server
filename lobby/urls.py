@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^add/', 'lobbyapp.views.add_entry'),
     url(r'^list/$', 'lobbyapp.views.list_entries'),
     url(r'^(\d+)/$', 'lobbyapp.views.get_entry'),
+    url(r'^debuginfo/add/', 'debuginfo.views.add_entry'),
 ]
