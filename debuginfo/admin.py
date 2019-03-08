@@ -2,7 +2,7 @@ from django.contrib import admin
 from models import *
 
 class DebugInfoAdmin(admin.ModelAdmin):
-  list_display = ['ip', 'created']
+  list_display = ['id', 'ip', 'created']
 
   def get_queryset(self, request):
     qs = super(DebugInfoAdmin, self).get_queryset(request)
