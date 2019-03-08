@@ -32,4 +32,4 @@ def add_entry(request):
   obj.info = request.POST['info']
   obj.save()
 
-  return HttpResponse('OK')
+  return HttpResponse('OK ' + str(obj.id))

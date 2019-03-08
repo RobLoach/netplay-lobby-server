@@ -10,7 +10,12 @@ class DebugInfoAdmin(admin.ModelAdmin):
     if request.user.is_superuser:
       return qs
 
-    return qs.filter(visible=True)
+    qs = qs.filter(visible=True)
+
+    if len(qs) >= 5:
+      return qs[-5:]
+    else:
+      return qs
 
   def save_model(self, request, obj, form, change):
     if change:
