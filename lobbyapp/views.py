@@ -119,6 +119,45 @@ def request_new_mitm_port(mitm_ip=MITM_HOST, mitm_port=MITM_PORT):
 
   return 0
 
+def is_valid(entry):
+  banned_usernames = [
+    'sp ',
+    'vagina',
+    'penis',
+    'archive.org'
+  ]
+  banned_ips = [
+    '13.235.33.105',
+    '15.164.165.48',
+    '13.124.115.58',
+    '13.209.96.155',
+    '15.164.220.235',
+    '15.164.217.149',
+    '13.125.23.158',
+    '15.164.226.219',
+    '52.79.76.79',
+    '52.79.227.43'
+  ]
+  banned_frontends = [
+    'DannyBoy'
+  ]
+  banned_subsystem_names = [
+    'LittleJuan'
+  ]
+  for username in banned_usernames:
+    if username in entry['username']:
+      return False
+  for ip in banned_ips:
+    if ip in entry['ip']:
+      return False
+  for frontend in banned_frontends:
+    if frontend in entry['frontend']:
+      return False
+  for subsystem_name in banned_subsystem_names:
+    if subsystem_name in entry['subsystem_name']:
+      return False
+  return True
+
 @csrf_exempt
 def add_entry(request):
   if request.method != 'POST' or \
@@ -210,25 +249,27 @@ def add_entry(request):
         update = entry.id
         break
 
+  kwargs = {
+    'username': username,
+    'core_name': request.POST['core_name'],
+    'game_name': request.POST['game_name'],
+    'game_crc': request.POST['game_crc'].upper(),
+    'core_version': request.POST['core_version'],
+    'ip': ip,
+    'port': port,
+    'host_method': host_method,
+    'has_password': has_password,
+    'has_spectate_password': has_spectate_password,
+    'retroarch_version': retroarch_version,
+    'frontend' : frontend,
+    'subsystem_name' : subsystem_name,
+    'country': get_country(ip),
+  }
+  if !is_valid(kwargs):
+    raise Http404
+
   try:
     connection.close()
-
-    kwargs = {
-      'username': username,
-      'core_name': request.POST['core_name'],
-      'game_name': request.POST['game_name'],
-      'game_crc': request.POST['game_crc'].upper(),
-      'core_version': request.POST['core_version'],
-      'ip': ip,
-      'port': port,
-      'host_method': host_method,
-      'has_password': has_password,
-      'has_spectate_password': has_spectate_password,
-      'retroarch_version': retroarch_version,
-      'frontend' : frontend,
-      'subsystem_name' : subsystem_name,
-      'country': get_country(ip),
-    }
 
     change_mitm = False
     mitm_ip = MITM_HOST
