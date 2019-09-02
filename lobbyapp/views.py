@@ -265,7 +265,7 @@ def add_entry(request):
     'subsystem_name' : subsystem_name,
     'country': get_country(ip),
   }
-  if !is_valid(kwargs):
+  if not is_valid(kwargs):
     raise Http404
 
   try:
