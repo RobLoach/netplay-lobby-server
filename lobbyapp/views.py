@@ -64,7 +64,7 @@ def send_irc_netplay_message(msg):
 
     # ignore response for now
     urllib2.urlopen(request, timeout=10)
-  except Exception, e:
+  except (Exception, e):
     msg = handle_exception()
 
     with open('/tmp/irc_error', 'wb') as f:
@@ -80,7 +80,7 @@ def send_discord_netplay_message(msg):
 
     # ignore response for now
     urllib2.urlopen(request, urllib.urlencode(data), timeout=10)
-  except Exception, e:
+  except (Exception, e):
     msg = handle_exception()
 
     with open('/tmp/discord_error', 'wb') as f:
@@ -110,7 +110,7 @@ def request_new_mitm_port(mitm_ip=MITM_HOST, mitm_port=MITM_PORT):
         port = port_unpack[0]
 
         return port
-  except Exception, e:
+  except (Exception, e):
     msg = handle_exception()
 
     f = open('/tmp/entry_mitm_error', 'wb')
@@ -139,22 +139,22 @@ def is_valid(entry):
     '52.79.227.43'
   ]
   banned_frontends = [
-    'DannyBoy'
+    'dannyboy'
   ]
   banned_subsystem_names = [
-    'LittleJuan'
+    'littlejuan'
   ]
   for username in banned_usernames:
-    if username in entry['username']:
+    if username in entry['username'].lower():
       return False
   for ip in banned_ips:
     if ip in entry['ip']:
       return False
   for frontend in banned_frontends:
-    if frontend in entry['frontend']:
+    if frontend in entry['frontend'].lower():
       return False
   for subsystem_name in banned_subsystem_names:
-    if subsystem_name in entry['subsystem_name']:
+    if subsystem_name in entry['subsystem_name'].lower():
       return False
   return True
 
@@ -295,7 +295,7 @@ def add_entry(request):
           mitm_port = int(mitm_server[1])
         else:
           mitm_port = MITM_PORT
-      except Exception, e:
+      except (Exception, e):
         msg = handle_exception()
 
         f = open('/tmp/mitm_server_error', 'wb')
@@ -356,7 +356,7 @@ def add_entry(request):
     response = HttpResponse(result, content_type='text/plain')
 
     return response
-  except Exception, e:
+  except (Exception, e):
     msg = handle_exception()
 
     f = open('/tmp/entry_error', 'wb')
